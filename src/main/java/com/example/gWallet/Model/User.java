@@ -15,13 +15,23 @@ public class User {
     @Column(columnDefinition = "integer default 0")
     private int bal;
     private String email;
+    private String password;
 
-    public User(int id, String name, int bal, String email, String mobile) {
+    public User(int id, String name, int bal, String email, String mobile, String password) {
         this.id = id;
         this.name = name;
         this.bal = bal;
         this.email = email;
         this.mobile = mobile;
+        this.password=password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -74,5 +84,7 @@ public class User {
         this.name = name;
         this.bal=bal;
     }
+
+
 }
 

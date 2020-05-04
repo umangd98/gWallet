@@ -70,19 +70,28 @@ public class UserController {
                 });
         if(sender.getBal()>=amt)
         {
+            Wallet wallet = new Wallet();
+            wallet.setUid(sender.getId());
+            wallet.setAmount(sender.getBal()-amt);
+            WDao.updateWallet(wallet);
             sender.setBal(sender.getBal()-amt);
+            wallet.setUid(receiver.getId());
+            wallet.setAmount(receiver.getBal()+amt);
             receiver.setBal(receiver.getBal()+amt);
+            WDao.updateWallet(wallet);
             transaction.setStatus("SUCCESS");
 
         }
         else {
                 transaction.setStatus("FAILED");
         }
+        trepository.save(transaction);
         logger.info(String.format("$$ -> Producing Transaction --> %s",transaction));
-        kafkaTemplate.send(TOPIC,Integer.toString(transaction.getAmount()));
+        System.out.println("transaction id:" + transaction.getId());
+        kafkaTemplate.send(TOPIC,Integer.toString(transaction.getId()));
         repository.save(receiver);
         repository.save(sender);
-        return trepository.save(transaction);
+        return transaction;
     }
     @GetMapping("/getBal/{id}")
     Wallet getBal(@PathVariable int id)
